@@ -1,12 +1,11 @@
-import logo from './logo.svg'
-import './App.css'
-import { getDaysInMonth, startOfMonth, endOfMonth, eachDayOfInterval, getDate, getMonth, format } from 'date-fns'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import Box from '@material-ui/core/Box'
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Typography } from '@material-ui/core'
-import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles'
+import Box from '@material-ui/core/Box'
 import { grey, red } from '@material-ui/core/colors'
+import { makeStyles } from '@material-ui/core/styles'
+import { eachDayOfInterval, endOfMonth, format, getDaysInMonth, getMonth, getYear, startOfMonth } from 'date-fns'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Calendar from './Calendar'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -71,6 +70,9 @@ const useDateNavigation = () => {
     const [StartDate, setStartDate] = useState(0)
     const [EndDate, setEndDate] = useState(0)
     const [DayList, setDayList] = useState(null)
+    const [selectedYear, setSelectedYear] = useState(getYear(new Date()))
+
+    console.log(selectedYear)
 
     // Set the starting month
     useEffect(() => {
@@ -84,20 +86,20 @@ const useDateNavigation = () => {
     // Generate the Month Info
     useEffect(() => {
         if (SelectedMonth !== null && SelectedMonth !== undefined) {
-            setTotalDays(getDaysInMonth(new Date(2020, SelectedMonth, 1)))
+            setTotalDays(getDaysInMonth(new Date(selectedYear, SelectedMonth, 1)))
         }
-    }, [SelectedMonth])
+    }, [SelectedMonth, selectedYear])
 
     useEffect(() => {
         if (SelectedMonth !== null && SelectedMonth !== undefined) {
-            const ExpectedDate = new Date(2020, SelectedMonth, 1)
+            const ExpectedDate = new Date(selectedYear, SelectedMonth, 1)
             setStartDate(startOfMonth(ExpectedDate))
         }
     }, [SelectedMonth])
 
     useEffect(() => {
         if (SelectedMonth !== null && SelectedMonth !== undefined) {
-            const ExpectedDate = new Date(2020, SelectedMonth, 1)
+            const ExpectedDate = new Date(selectedYear, SelectedMonth, 1)
             setEndDate(endOfMonth(ExpectedDate))
         }
     }, [SelectedMonth])
@@ -123,6 +125,7 @@ const useDateNavigation = () => {
             // Reset on last month
             if (+SelectedMonth === 11) {
                 setSelectedMonth(0)
+                setSelectedYear(old => old + 1)
             } else {
                 setSelectedMonth(c => (c += 1))
             }
@@ -134,18 +137,19 @@ const useDateNavigation = () => {
             // Reset on first
             if (+SelectedMonth === 0) {
                 setSelectedMonth(11)
+                setSelectedYear(old => old - 1)
             } else {
                 setSelectedMonth(c => (c -= 1))
             }
         }
     }, [SelectedMonth])
 
-    return [SelectedMonth, TotalDays, StartDate, EndDate, DayList, HandleNextMonthPress, HandlePreviousMonthPress]
+    return [SelectedMonth, TotalDays, StartDate, EndDate, DayList, selectedYear, HandleNextMonthPress, HandlePreviousMonthPress]
 }
 
 export default () => {
     const classes = useStyles()
-    const [SelectedMonth, TotalDays, StartDate, EndDate, DayList, HandleNextMonthPress, HandlePreviousMonthPress] = useDateNavigation()
+    const [SelectedMonth, TotalDays, StartDate, EndDate, DayList, selectedYear, HandleNextMonthPress, HandlePreviousMonthPress] = useDateNavigation()
 
     // if (!!TotalDays || !!StartDate || !!EndDate) return null
 
@@ -157,7 +161,7 @@ export default () => {
                     <Button onClick={HandlePreviousMonthPress}>
                         <Typography style={{ color: grey[100] }}>Previous</Typography>
                     </Button>
-                    <Typography>{format(new Date(2020, SelectedMonth, 1), 'LLLL')}</Typography>
+                    <Typography>{format(new Date(selectedYear, SelectedMonth, 1), 'LLLL')}</Typography>
                     <Button onClick={HandleNextMonthPress}>
                         <Typography style={{ color: grey[100] }}>Next</Typography>
                     </Button>
