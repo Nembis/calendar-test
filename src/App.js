@@ -13,7 +13,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Box from '@material-ui/core/Box'
 import { Button, Typography } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 import { grey, red } from '@material-ui/core/colors'
 
