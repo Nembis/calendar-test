@@ -155,7 +155,7 @@ export default () => {
 
     return (
         <div>
-            <p>Calendar</p>
+            <p>Calendar {selectedYear}</p>
             {SelectedMonth !== null ? (
                 <Box className={classes.navbox}>
                     <Button onClick={HandlePreviousMonthPress}>
